@@ -1,0 +1,10 @@
+- attributes("title") = "Scalavatar - simple avatar server"
+- attributes("headline") = "Welcome to Scalavatar"
+
+form(action="/avatar" method="post")
+  div
+    input#e-mail(type="text" name="e-mail" placeholder="E-mail address")
+  div
+    input#image-file(type="file" name="image-file")
+  div
+    button#send Send
