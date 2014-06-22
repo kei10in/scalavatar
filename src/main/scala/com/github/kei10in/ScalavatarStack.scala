@@ -1,13 +1,16 @@
 package com.github.kei10in
 
 import org.scalatra._
+import org.scalatra.servlet._
 import scalate.ScalateSupport
 import org.fusesource.scalate.{ TemplateEngine, Binding }
 import org.fusesource.scalate.layout.DefaultLayoutStrategy
 import javax.servlet.http.HttpServletRequest
 import collection.mutable
 
-trait ScalavatarStack extends ScalatraServlet with ScalateSupport {
+trait ScalavatarStack extends ScalatraServlet with ScalateSupport with FileUploadSupport {
+
+  configureMultipartHandling(MultipartConfig(maxFileSize = Some(50*1024*1024)))
 
   /* wire up the precompiled templates */
   override protected def defaultTemplatePath: List[String] = List("/WEB-INF/templates/views")

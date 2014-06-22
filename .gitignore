@@ -1,3 +1,6 @@
+## project specific
+src/main/webapp/avatars
+
 ## generic files to ignore
 *~
 *.lock
