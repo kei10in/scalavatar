@@ -6,9 +6,16 @@
   .col-md-4
     h2 Upload Image File
     form(action="/avatar" method="post" enctype="multipart/form-data")
-      div
-        input#e-mail.form-control(type="text" name="e-mail" placeholder="E-mail address")
-      div
-        input#image-file.btn.btn-file(type="file" name="image-file")
-      div
-        button#send.btn.btn-primary Send
+      p
+        input.form-control(type="text" name="e-mail" placeholder="E-mail address")
+      p
+        input.btn.btn-file(type="file" name="image-file")
+      p
+        button.btn.btn-primary Send
+    h2 View Image File
+    form(action="/avatar" method="get")
+      p
+        input.form-control(type="text" name="e-mail" placeholder="E-mail address")
+      p
+        button.btn.btn-primary View
+
