@@ -15,6 +15,23 @@ class ScalavatarServlet extends ScalavatarStack {
     jade("/index")
   }
 
+  get("/avatar/:avatarHash") {
+    val avatarHash = params("avatarHash")
+    val path = new File(servletContext.getRealPath("/avatars"))
+    val dir = new File(path, avatarHash.take(2))
+    val filepath = new File(dir, avatarHash.drop(2))
+
+    contentType = "image/png"
+    filepath
+  }
+
+  get("/avatar") {
+    val eMail = params("e-mail")
+    val avatarHash = toMD5String(eMail.trim().toLowerCase())
+
+    redirect("/avatar/" + avatarHash)
+  }
+
   post("/avatar") {
     val eMail = params("e-mail")
     val file = fileParams("image-file")
