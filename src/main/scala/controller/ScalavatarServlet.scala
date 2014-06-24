@@ -1,5 +1,7 @@
 package com.github.kei10in
 
+import model._
+
 import java.io.File
 import java.security.MessageDigest
 import java.nio.charset.StandardCharsets._
@@ -9,6 +11,8 @@ import scalate.ScalateSupport
 
 
 class ScalavatarServlet extends ScalavatarStack {
+
+  lazy val app = new Application(new File(servletContext.getRealPath("/")))
 
   get("/") {
     contentType = "text/html"
@@ -33,21 +37,10 @@ class ScalavatarServlet extends ScalavatarStack {
   }
 
   post("/avatar") {
-    val eMail = params("e-mail")
+    val email = params("e-mail")
     val file = fileParams("image-file")
 
-    val avatarHash = toMD5String(eMail.trim().toLowerCase())
-
-    val path = new File(servletContext.getRealPath("/avatars"))
-    if (!path.exists())
-      path.mkdir()
-
-    val dir = new File(path, avatarHash.take(2))
-    if (!dir.exists())
-      dir.mkdir()
-
-    val filepath = new File(dir, avatarHash.drop(2))
-    file.write(filepath)
+    app.updateImage(email, file)
 
     redirect("/")
   }
