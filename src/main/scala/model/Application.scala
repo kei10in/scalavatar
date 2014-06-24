@@ -9,6 +9,13 @@ import org.scalatra.servlet.FileItem
 
 class Application(workingDirectory: File) {
 
+  val avatarsDir = new File(workingDirectory, "/avatars")
+
+  def findImageByHash(hash: String) = {
+    val dir = new File(avatarsDir, hash.take(2))
+    new File(dir, hash.drop(2))
+  }
+
   def updateImage(email: String, imageFile: FileItem) = {
     val avatarHash = toMD5String(email.trim().toLowerCase())
 

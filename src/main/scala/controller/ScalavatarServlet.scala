@@ -21,12 +21,9 @@ class ScalavatarServlet extends ScalavatarStack {
 
   get("/avatar/:avatarHash") {
     val avatarHash = params("avatarHash")
-    val path = new File(servletContext.getRealPath("/avatars"))
-    val dir = new File(path, avatarHash.take(2))
-    val filepath = new File(dir, avatarHash.drop(2))
 
     contentType = "image/png"
-    filepath
+    app.findImageByHash(avatarHash)
   }
 
   get("/avatar") {
