@@ -17,7 +17,7 @@ class Application(workingDirectory: File) {
   }
 
   def updateImage(email: String, imageFile: FileItem) = {
-    val avatarHash = toMD5String(email.trim().toLowerCase())
+    val avatarHash = avatarHashFor(email)
 
     val path = new File(workingDirectory, "/avatars")
     if (!path.exists())
