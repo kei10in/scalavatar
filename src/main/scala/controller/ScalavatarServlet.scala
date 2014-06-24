@@ -27,10 +27,9 @@ class ScalavatarServlet extends ScalavatarStack {
   }
 
   get("/avatar") {
-    val eMail = params("e-mail")
-    val avatarHash = toMD5String(eMail.trim().toLowerCase())
+    val email = params("e-mail")
 
-    redirect("/avatar/" + avatarHash)
+    redirect("/avatar/" + app.avatarHashFor(email))
   }
 
   post("/avatar") {
@@ -40,12 +39,6 @@ class ScalavatarServlet extends ScalavatarStack {
     app.updateImage(email, file)
 
     redirect("/")
-  }
-
-  def toMD5String(s: String): String = {
-    val digestBytes = MessageDigest.getInstance("MD5").digest(s.getBytes(UTF_8))
-
-    digestBytes.map("%02x".format(_)).mkString
   }
 
 }

@@ -31,6 +31,10 @@ class Application(workingDirectory: File) {
     imageFile.write(filepath)
   }
 
+  def avatarHashFor(email: String): String = {
+    toMD5String(email.trim().toLowerCase())
+  }
+
   private def toMD5String(s: String): String = {
     val digestBytes = MessageDigest.getInstance("MD5").digest(s.getBytes(UTF_8))
 
