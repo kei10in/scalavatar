@@ -14,9 +14,13 @@ class Application(workingDirectory: File) {
 
   val avatarsDir = new File(workingDirectory, "/avatars")
 
-  def findImageByHash(hash: String) = {
+  def findImageByHash(hash: String) : Option[File] = {
     val dir = new File(avatarsDir, hash.take(2))
-    new File(dir, hash.drop(2))
+    val filepath = new File(dir, hash.drop(2))
+    if (filepath.exists())
+      Some(filepath)
+    else
+      None
   }
 
   def updateImage(email: String, imageFile: FileItem) = {
