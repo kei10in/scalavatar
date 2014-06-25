@@ -1,8 +1,11 @@
 package com.github.kei10in.model
 
+import scala.math._
+
 import java.io.File
 import java.security.MessageDigest
 import java.nio.charset.StandardCharsets._
+import javax.imageio._
 
 import org.scalatra.servlet.FileItem
 
@@ -28,7 +31,16 @@ class Application(workingDirectory: File) {
       dir.mkdir()
 
     val filepath = new File(dir, avatarHash.drop(2))
-    imageFile.write(filepath)
+
+    val img = ImageIO.read(imageFile.getInputStream)
+
+    val len = min(img.getHeight(), img.getWidth())
+
+    val x: Int = (img.getWidth - len) / 2;
+    val y : Int = (img.getHeight() - len) / 2;
+    val subimg = img.getSubimage(x, y, len, len)
+
+    ImageIO.write(subimg, "png", filepath)
   }
 
   def avatarHashFor(email: String): String = {
