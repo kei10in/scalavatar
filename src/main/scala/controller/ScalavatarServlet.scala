@@ -46,6 +46,11 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
     }
   }
 
+  get("/avatar") {
+    contentType = "text/html"
+    jade("/avatar")
+  }
+
   post("/avatar") {
     val email = params("e-mail")
     val file = fileParams("image-file")
