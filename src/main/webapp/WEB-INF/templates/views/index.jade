@@ -10,7 +10,7 @@
     h2 Upload Image File
     form(action="/avatar" method="post" enctype="multipart/form-data")
       p
-        input.form-control(type="text" name="e-mail" placeholder="E-mail address")
+        input.form-control(type="email" name="e-mail" placeholder="E-mail address")
       p
         input(type="file" name="image-file")
       p
@@ -18,6 +18,6 @@
     h2 View Image File
     form(action="/search" method="get")
       p
-        input.form-control(type="text" name="e-mail" placeholder="E-mail address")
+        input.form-control(type="email" name="e-mail" placeholder="E-mail address")
       p
         button.btn.btn-primary View
