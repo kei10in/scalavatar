@@ -60,7 +60,7 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
     (isInvalidEmail(email), loadFileAsImage(file)) match {
       case (false, Some(img)) =>
-        app.updateImage (email, file)
+        app.updateImage (email, img)
         redirect ("/")
       case (isInvalidEmail, img) =>
         contentType = "text/html"

@@ -6,6 +6,7 @@ import java.io.File
 import java.security.MessageDigest
 import java.nio.charset.StandardCharsets._
 import javax.imageio._
+import java.awt.image.BufferedImage
 
 import org.scalatra.servlet.FileItem
 
@@ -25,7 +26,7 @@ class Application(workingDirectory: File) {
 
   def findImageByEmail(email: String) = findImageByHash(avatarHashFor(email))
 
-  def updateImage(email: String, imageFile: FileItem) = {
+  def updateImage(email: String, img: BufferedImage) = {
     val avatarHash = avatarHashFor(email)
 
     val path = new File(workingDirectory, "/avatars")
@@ -37,8 +38,6 @@ class Application(workingDirectory: File) {
       dir.mkdir()
 
     val filepath = new File(dir, avatarHash.drop(2))
-
-    val img = ImageIO.read(imageFile.getInputStream)
 
     val len = min(img.getHeight(), img.getWidth())
 
