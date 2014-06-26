@@ -11,10 +11,10 @@
   .col-md-4
     h2 Upload Image File
     form(action="/avatar" method="post" enctype="multipart/form-data")
-      - val email_alert = if (isInvalidEmail) "has-error has-feedback" else ""
+      - val email_alert = if (isInvalidEmail) "has-error" else ""
       div(class="#{email_alert}")
         p
-          input.form-control#email(type="text" name="e-mail" placeholder="E-mail address")
+          input.form-control(type="text" name="e-mail" placeholder="E-mail address")
         - if (isInvalidEmail)
           p.text-danger Invalid e-mail address.
       - val file_alert = if (isInvalidImageFile) "has-error" else ""
