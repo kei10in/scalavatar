@@ -58,18 +58,17 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
     val email = params("e-mail")
     val file = fileParams("image-file")
 
-    val isInvalidEmail = !EmailValidator.getInstance().isValid(email)
-    val img = loadFileAsImage(file)
-
-    (isInvalidEmail, img) match {
-      case (false, Some(imageBuffer)) =>
+    (isInvalidEmail(email), loadFileAsImage(file)) match {
+      case (false, Some(img)) =>
         app.updateImage (email, file)
         redirect ("/")
-      case (_, _) =>
+      case (isInvalidEmail, img) =>
         contentType = "text/html"
         BadRequest(jade("/avatar", "isInvalidEmail" -> isInvalidEmail, "isInvalidImageFile" -> img.isEmpty))
     }
   }
+
+  def isInvalidEmail(email: String) = !EmailValidator.getInstance().isValid(email)
 
   def loadFileAsImage(file: FileItem): Option[BufferedImage] = {
     file.getContentType match {
