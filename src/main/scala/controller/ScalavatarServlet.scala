@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets._
 import org.scalatra._
 import scalate.ScalateSupport
 
+import org.apache.commons.validator.routines.EmailValidator
+
 
 class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
@@ -48,9 +50,13 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
     val email = params("e-mail")
     val file = fileParams("image-file")
 
-    app.updateImage(email, file)
-
-    redirect("/")
+    if (EmailValidator.getInstance().isValid(email)) {
+      app.updateImage(email, file)
+      redirect("/")
+    } else {
+      contentType = "text/html"
+      BadRequest(jade("/avatar", "isInvalidEmail" -> true))
+    }
   }
 
 }
