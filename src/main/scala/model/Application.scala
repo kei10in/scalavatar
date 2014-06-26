@@ -23,6 +23,8 @@ class Application(workingDirectory: File) {
       None
   }
 
+  def findImageByEmail(email: String) = findImageByHash(avatarHashFor(email))
+
   def updateImage(email: String, imageFile: FileItem) = {
     val avatarHash = avatarHashFor(email)
 

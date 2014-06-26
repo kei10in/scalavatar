@@ -10,7 +10,7 @@ import org.scalatra._
 import scalate.ScalateSupport
 
 
-class ScalavatarServlet extends ScalavatarStack {
+class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
   lazy val app = new Application(new File(servletContext.getRealPath("/")))
 
@@ -19,7 +19,7 @@ class ScalavatarServlet extends ScalavatarStack {
     jade("/index")
   }
 
-  get("/avatar/:avatarHash") {
+  val avatarUrl = get("/avatar/:avatarHash") {
     val avatarHash = params("avatarHash")
 
     app.findImageByHash(avatarHash) match {
@@ -31,10 +31,17 @@ class ScalavatarServlet extends ScalavatarStack {
     }
   }
 
-  get("/avatar") {
+  get("/search") {
     val email = params("e-mail")
 
-    redirect("/avatar/" + app.avatarHashFor(email))
+    contentType = "text/html"
+    jade("/search", "imageSource" -> avatarSourceFor(email))
+  }
+
+  def avatarSourceFor(email: String) = {
+    app.findImageByEmail(email).flatMap { _ =>
+      Some(url(avatarUrl, "avatarHash" -> app.avatarHashFor(email)))
+    }
   }
 
   post("/avatar") {

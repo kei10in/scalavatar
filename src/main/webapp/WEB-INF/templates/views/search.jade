@@ -1,0 +1,11 @@
+-@ val imageSource: Option[String]
+- attributes("title") = "search result - Scalavatar"
+
+.container
+  h3 search result
+  p
+    - imageSource match
+      - case Some(src) =>
+        img(src=src)
+      - case None =>
+        p not found
