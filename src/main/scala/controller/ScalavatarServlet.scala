@@ -67,7 +67,7 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
         redirect ("/")
       case (_, _) =>
         contentType = "text/html"
-        BadRequest(jade("/avatar", "isInvalidEmail" -> isInvalidEmail))
+        BadRequest(jade("/avatar", "isInvalidEmail" -> isInvalidEmail, "isInvalidImageFile" -> img.isEmpty))
     }
   }
 

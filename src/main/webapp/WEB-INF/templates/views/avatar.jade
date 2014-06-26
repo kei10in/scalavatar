@@ -1,4 +1,5 @@
 -@ val isInvalidEmail: Boolean = false
+-@ val isInvalidImageFile: Boolean = false
 - attributes("title") = "Scalavatar - upload avatar"
 :javascript
   $(document).ready(function(){
@@ -16,9 +17,12 @@
           input.form-control#email(type="text" name="e-mail" placeholder="E-mail address")
         - if (isInvalidEmail)
           p.text-danger Invalid e-mail address.
-      div
+      - val file_alert = if (isInvalidImageFile) "has-error" else ""
+      div(class="#{file_alert}")
         p
           input(type="file" name="image-file")
+        - if (isInvalidImageFile)
+          p.text-danger You can upload only jpeg, png, gif, bmp or tiff file.
       div
         p
           button.btn.btn-primary Send
