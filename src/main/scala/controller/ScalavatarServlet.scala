@@ -27,7 +27,7 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
     app.findImageByHash(avatarHash) match {
       case Some(avatar) =>
         val os = new ByteArrayOutputStream()
-        ImageIO.write(avatar.image, "png", os)
+        ImageIO.write(avatar.imageWithSize(80), "png", os)
         os.flush()
         val bytes = os.toByteArray()
         os.close()
