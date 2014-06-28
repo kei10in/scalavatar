@@ -8,18 +8,16 @@ import java.nio.charset.StandardCharsets._
 import javax.imageio._
 import java.awt.image.BufferedImage
 
-import org.scalatra.servlet.FileItem
-
 
 class Application(workingDirectory: File) {
 
   val avatarsDir = new File(workingDirectory, "/avatars")
 
-  def findImageByHash(hash: String) : Option[File] = {
+  def findImageByHash(hash: String) : Option[Avatar] = {
     val dir = new File(avatarsDir, hash.take(2))
     val filepath = new File(dir, hash.drop(2))
     if (filepath.exists())
-      Some(filepath)
+      Some(Avatar.fromFile(filepath))
     else
       None
   }

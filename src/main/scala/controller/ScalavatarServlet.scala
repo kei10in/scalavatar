@@ -1,14 +1,11 @@
 package com.github.kei10in
 
-import java.io.File
-import java.security.MessageDigest
-import java.nio.charset.StandardCharsets._
+import java.io.{ByteArrayOutputStream, File}
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 
 import org.scalatra._
 import org.scalatra.servlet.FileItem
-import scalate.ScalateSupport
 
 import org.apache.commons.validator.routines.EmailValidator
 
@@ -28,9 +25,14 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
     val avatarHash = params("avatarHash")
 
     app.findImageByHash(avatarHash) match {
-      case Some(filepath) =>
+      case Some(avatar) =>
+        val os = new ByteArrayOutputStream()
+        ImageIO.write(avatar.image, "png", os)
+        os.flush()
+        val bytes = os.toByteArray()
+        os.close()
         contentType = "image/png"
-        Ok(filepath)
+        Ok(bytes)
       case None =>
         NotFound("file not found")
     }
