@@ -53,7 +53,12 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
     }
   }
 
-  def parseAvatarRequest(avatarRequest: String) = avatarRequest.take(avatarRequest.indexOf('.'))
+  def parseAvatarRequest(avatarRequest: String) = {
+    if (avatarRequest.contains('.'))
+      avatarRequest.take(avatarRequest.indexOf('.'))
+    else
+      avatarRequest
+  }
 
   get("/search") {
     val email = params("e-mail")
