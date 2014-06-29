@@ -1,5 +1,7 @@
 package com.github.kei10in
 
+import scala.util._
+
 import java.io.{ByteArrayOutputStream, File}
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -15,6 +17,9 @@ import model._
 class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
   lazy val app = new Application(new File(servletContext.getRealPath("/")))
+  val minSize = 1
+  val maxSize = 2048
+  val defaultSize = 80
 
   get("/") {
     contentType = "text/html"
@@ -23,18 +28,28 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
   val avatarUrl = get("/avatar/:avatarHash") {
     val avatarHash = params("avatarHash")
-
-    app.findImageByHash(avatarHash) match {
-      case Some(avatar) =>
-        val os = new ByteArrayOutputStream()
-        ImageIO.write(avatar.imageWithSize(80), "png", os)
-        os.flush()
-        val bytes = os.toByteArray()
-        os.close()
+    val s = params.get("s") match {
+      case Some(v) =>
+        Try(Integer.parseInt(v)) match {
+          case Success(size) =>
+            if (size <= minSize) minSize
+            else if (size <= maxSize) size
+            else maxSize
+          case Failure(_) => 1  // for gravatar compatible
+        }
+      case None => defaultSize
+    }
+    app.findImageByHash (avatarHash) match {
+      case Some (avatar) =>
+        val os = new ByteArrayOutputStream ()
+        ImageIO.write (avatar.imageWithSize (s), "png", os)
+        os.flush ()
+        val bytes = os.toByteArray ()
+        os.close ()
         contentType = "image/png"
-        Ok(bytes)
+        Ok (bytes)
       case None =>
-        NotFound("file not found")
+        NotFound ("file not found")
     }
   }
 
