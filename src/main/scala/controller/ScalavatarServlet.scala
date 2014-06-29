@@ -47,6 +47,7 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
         val bytes = os.toByteArray ()
         os.close ()
         contentType = "image/png"
+        response.setHeader("Content-Disposition", "inline; filename=\"" + avatarKey + ".png\"")
         Ok (bytes)
       case None =>
         NotFound ("file not found")
