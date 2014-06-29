@@ -70,7 +70,7 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
   def avatarSourceFor(email: String) = {
     app.findImageByEmail(email).flatMap { _ =>
-      Some(url(avatarUrl, "avatarHash" -> app.avatarHashFor(email)))
+      Some(url(avatarUrl, "avatarRequest" -> app.avatarHashFor(email)))
     }
   }
 
