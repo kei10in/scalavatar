@@ -26,8 +26,8 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
     jade("/index")
   }
 
-  val avatarUrl = get("/avatar/:avatarHash") {
-    val avatarHash = params("avatarHash")
+  val avatarUrl = get("/avatar/:avatarRequest") {
+    val avatarKey = parseAvatarRequest(params("avatarRequest"))
     val s = params.get("s") match {
       case Some(v) =>
         Try(Integer.parseInt(v)) match {
@@ -39,7 +39,7 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
         }
       case None => defaultSize
     }
-    app.findImageByHash (avatarHash) match {
+    app.findImageByHash (avatarKey) match {
       case Some (avatar) =>
         val os = new ByteArrayOutputStream ()
         ImageIO.write (avatar.imageWithSize (s), "png", os)
@@ -52,6 +52,8 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
         NotFound ("file not found")
     }
   }
+
+  def parseAvatarRequest(avatarRequest: String) = avatarRequest.take(avatarRequest.indexOf('.'))
 
   get("/search") {
     val email = params("e-mail")
