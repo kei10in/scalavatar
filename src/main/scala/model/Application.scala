@@ -2,7 +2,7 @@ package com.github.kei10in.model
 
 import scala.math._
 
-import java.io.File
+import java.io.{ByteArrayOutputStream, File}
 import java.security.MessageDigest
 import java.nio.charset.StandardCharsets._
 import javax.imageio._
@@ -12,6 +12,10 @@ import java.awt.image.BufferedImage
 class Application(workingDirectory: File) {
 
   val avatarsDir = new File(workingDirectory, "/avatars")
+  val minSize = 1
+  val maxSize = 2048
+  val defaultSize = 80
+
 
   def findImageByHash(hash: String) : Option[Avatar] = {
     val dir = new File(avatarsDir, hash.take(2))
@@ -23,6 +27,21 @@ class Application(workingDirectory: File) {
   }
 
   def findImageByEmail(email: String) = findImageByHash(avatarHashFor(email))
+
+  def avatarImageBytesWithSize(avatar: Avatar, s: Option[Int]) = {
+    val size = s map { size =>
+      if (size <= minSize) minSize
+      else if (size <= maxSize) size
+      else maxSize
+    } getOrElse(defaultSize)
+
+    val os = new ByteArrayOutputStream ()
+    ImageIO.write (avatar.imageWithSize (size), "png", os)
+    os.flush ()
+    val bytes = os.toByteArray ()
+    os.close ()
+    bytes
+  }
 
   def updateImage(email: String, img: BufferedImage) = {
     val avatarHash = avatarHashFor(email)
