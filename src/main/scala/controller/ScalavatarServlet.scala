@@ -25,9 +25,7 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
   val avatarUrl = get("/avatar/:avatarRequest") {
     val avatarKey = parseAvatarRequest(params("avatarRequest"))
-    val s = params.get("s") map { v =>
-      Try(Integer.parseInt(v)).getOrElse(1)  // 1 for gravatar compatible
-    }
+    val s = parseAvatarSize(params.get("s"))
 
     app.findImageByHash(avatarKey) match {
       case Some(avatar) =>
@@ -46,6 +44,10 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
     else
       avatarRequest
   }
+
+  def parseAvatarSize(s: Option[String]) = s map { v =>
+      Try(Integer.parseInt(v)).getOrElse(1)  // 1 for gravatar compatible
+    }
 
   get("/search") {
     val email = params("e-mail")
