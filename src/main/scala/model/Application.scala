@@ -29,11 +29,7 @@ class Application(workingDirectory: File) {
   def findImageByEmail(email: String) = findImageByHash(avatarHashFor(email))
 
   def avatarImageBytesWithSize(avatar: Avatar, s: Option[Int]) = {
-    val size = s map { size =>
-      if (size <= minSize) minSize
-      else if (size <= maxSize) size
-      else maxSize
-    } getOrElse(defaultSize)
+    val size = validateSize(s)
 
     val os = new ByteArrayOutputStream ()
     ImageIO.write (avatar.imageWithSize (size), "png", os)
@@ -41,6 +37,14 @@ class Application(workingDirectory: File) {
     val bytes = os.toByteArray ()
     os.close ()
     bytes
+  }
+
+  private def validateSize(s: Option[Int]) = {
+    s map { size =>
+      if (size <= minSize) minSize
+      else if (size <= maxSize) size
+      else maxSize
+    } getOrElse(defaultSize)
   }
 
   def updateImage(email: String, img: BufferedImage) = {
