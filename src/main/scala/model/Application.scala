@@ -17,13 +17,16 @@ class Application(workingDirectory: File) {
   val defaultSize = 80
   lazy val defaultAvatar = new FileAvatar(new File(workingDirectory, "/img/default.png"))
 
-  def findImageByHash(hash: String) : Option[Avatar] = {
+  def findImageByHash(hash: String, default: Option[String]=None) : Option[Avatar] = {
     val dir = new File(avatarsDir, hash.take(2))
     val filepath = new File(dir, hash.drop(2))
     if (filepath.exists())
       Some(Avatar.fromFile(filepath))
     else
-      Some(defaultAvatar)
+      default match {
+        case Some("404") => None
+        case _ => Some(defaultAvatar)
+      }
   }
 
   def findImageByEmail(email: String) = findImageByHash(avatarHashFor(email))

@@ -25,16 +25,17 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
   val avatarUrl = get("/avatar/:avatarRequest") {
     val avatarKey = parseAvatarRequest(params("avatarRequest"))
+    val d = params.get("d")
     val s = parseAvatarSize(params.get("s"))
 
-    app.findImageByHash(avatarKey) match {
+    app.findImageByHash(avatarKey, d) match {
       case Some(avatar) =>
         val bytes = app.avatarImageBytesWithSize(avatar, s)
         contentType = "image/png"
         response.setHeader("Content-Disposition", "inline; filename=\"" + avatarKey + ".png\"")
         Ok (bytes)
       case None =>
-        NotFound ("file not found")
+        NotFound("404 Not Found")
     }
   }
 
