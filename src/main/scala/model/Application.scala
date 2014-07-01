@@ -15,7 +15,7 @@ class Application(workingDirectory: File) {
   val minSize = 1
   val maxSize = 2048
   val defaultSize = 80
-
+  lazy val defaultAvatar = new FileAvatar(new File(workingDirectory, "/img/default.png"))
 
   def findImageByHash(hash: String) : Option[Avatar] = {
     val dir = new File(avatarsDir, hash.take(2))
@@ -23,7 +23,7 @@ class Application(workingDirectory: File) {
     if (filepath.exists())
       Some(Avatar.fromFile(filepath))
     else
-      None
+      Some(defaultAvatar)
   }
 
   def findImageByEmail(email: String) = findImageByHash(avatarHashFor(email))
