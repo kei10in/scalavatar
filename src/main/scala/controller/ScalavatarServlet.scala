@@ -26,7 +26,7 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
   val avatarUrl = get("/avatar/:avatarRequest") {
     val avatarKey = parseAvatarRequest(params("avatarRequest"))
     val d = params.get("d")
-    val s = parseAvatarSize(params.get("s"))
+    val s = parseAvatarSize(params.get("size").orElse(params.get("s")))
 
     app.findImageByHash(avatarKey, d) match {
       case Some(avatar) =>
