@@ -70,3 +70,6 @@ jrebel.lic
 
 # paulp script
 /.lib/
+
+# gradle
+.gradle

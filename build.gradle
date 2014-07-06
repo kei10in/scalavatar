@@ -1,0 +1,68 @@
+apply plugin: 'java'
+
+def scalavatarVersion = "0.1.0-SNAPSHOT"
+def scalaVersion = "2.11"
+def mainClass = 'com.github.kei10in.scalavatar.standalone.JettyLauncher'
+
+def targetDir = file('target')
+def embedClasses = new File(targetDir, 'embed-classes')
+def warDir = new File(targetDir, 'standalone_war')
+
+def inputWar = new File(targetDir, "scala-${scalaVersion}/scalavatar_${scalaVersion}-${scalavatarVersion}.war")
+def outputWar = new File(targetDir, "scala-${scalaVersion}/scalavatar.war")
+
+def mainClassPackage = mainClass.substring(0, mainClass.lastIndexOf('.'))
+def mainClassPackagePath = mainClassPackage.replace('.', '/')
+
+configurations {
+    standalone
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    standalone 'org.eclipse.jetty:jetty-webapp:8.1.8.v20121106'
+}
+
+task sbtPackage(type: Exec) {
+    commandLine './sbt', 'package'
+}
+
+task extractBaseWar(dependsOn: sbtPackage) << {
+    ant.unzip(src: inputWar, dest: warDir)
+    ant.delete(dir: new File(warDir, 'avatars'))
+}
+
+task copyMainClass(dependsOn: extractBaseWar) << {
+    def src = new File(new File(targetDir, "scala-${scalaVersion}/classes"), mainClassPackagePath)
+    def dst = new File(warDir, mainClassPackagePath)
+    copy {
+        from src
+        into dst
+    }
+}
+
+task extractDependencies << {
+    for (file in configurations.standalone) {
+        ant.unzip(src: file.absolutePath, dest: embedClasses)
+    }
+
+    ant.delete(dir: new File(embedClasses, 'META-INF'))
+}
+
+task copyDependenciesExtracted(dependsOn: extractDependencies, type: Copy) {
+    from embedClasses
+    into warDir
+}
+
+task packageAsStandalone(dependsOn: [copyMainClass, copyDependenciesExtracted]) << {
+    ant.manifest(file: new File(warDir, 'META-INF/MANIFEST.MF')) {
+        attribute(name: 'Main-Class', value: mainClass)
+    }
+
+    ant.zip(destfile: "$outputWar") {
+        fileset(dir: warDir)
+    }
+}
