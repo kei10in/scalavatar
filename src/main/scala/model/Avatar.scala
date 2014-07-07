@@ -1,4 +1,4 @@
-package com.github.kei10in.model
+package com.github.kei10in.scalavatar.model
 
 import java.io.File
 import javax.imageio._

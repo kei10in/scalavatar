@@ -1,4 +1,4 @@
-import com.github.kei10in._
+import com.github.kei10in.scalavatar._
 import org.scalatra._
 import javax.servlet.ServletContext
 

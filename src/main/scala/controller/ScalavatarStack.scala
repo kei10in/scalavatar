@@ -1,4 +1,4 @@
-package com.github.kei10in
+package com.github.kei10in.scalavatar
 
 import org.scalatra._
 import org.scalatra.servlet._

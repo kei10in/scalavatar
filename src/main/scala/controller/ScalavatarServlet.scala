@@ -1,4 +1,4 @@
-package com.github.kei10in
+package com.github.kei10in.scalavatar
 
 import scala.util._
 

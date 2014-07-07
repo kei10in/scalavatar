@@ -1,4 +1,4 @@
-package com.github.kei10in.model
+package com.github.kei10in.scalavatar.model
 
 import scala.math._
 
