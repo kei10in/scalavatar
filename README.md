@@ -1,10 +1,10 @@
-# Scalavatar #
+# Scalavatar
 
 Simple avatar server similar to Gravatar. 
 
 Goal of scalavatar is working as avatar server for GitHub Enterprise in on premise environment.
 
-## Build & Run ##
+## Build & Run
 
 ```sh
 $ cd Scalavatar
