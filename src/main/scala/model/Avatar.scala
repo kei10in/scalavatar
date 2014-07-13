@@ -1,29 +1,17 @@
 package com.github.kei10in.scalavatar.model
 
 import java.io.File
+import java.net.URL
 import javax.imageio._
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 
+import scala.util.Try
+
 
 trait Avatar {
-  def image(): BufferedImage
-  def imageWithSize(s: Int): BufferedImage
-}
-
-object Avatar {
-  def fromFile(filepath: File) = {
-    new FileAvatar(filepath)
-  }
-}
-
-class FileAvatar(filepath: File) extends Avatar {
-  def image() = {
-    ImageIO.read(filepath)
-  }
-
-  def imageWithSize(s: Int) = {
-    val img = image()
+  def image(): Option[BufferedImage]
+  def imageWithSize(s: Int): Option[BufferedImage] = image().map { img=>
     val scaledImg = new BufferedImage(s, s, img.getType)
     val g = scaledImg.createGraphics()
 
@@ -41,5 +29,26 @@ class FileAvatar(filepath: File) extends Avatar {
     g.drawImage(img, 0, 0, s, s, null)
     scaledImg
   }
+}
 
+object Avatar {
+  def fromFile(filepath: File) = {
+    new FileAvatar(filepath)
+  }
+
+  def fromUrl(imageUrl: URL) = {
+    new UrlAvatar(imageUrl)
+  }
+}
+
+class FileAvatar(filepath: File) extends Avatar {
+  def image() = {
+    Try(ImageIO.read(filepath)).toOption
+  }
+}
+
+class UrlAvatar(imageUrl: URL) extends Avatar {
+  def image() = {
+    Try(ImageIO.read(imageUrl)).toOption
+  }
 }
