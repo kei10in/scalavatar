@@ -30,10 +30,13 @@ class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
     app.findImageByHash(avatarKey, d) match {
       case Some(avatar) =>
-        val bytes = app.avatarImageBytesWithSize(avatar, s)
-        contentType = "image/png"
-        response.setHeader("Content-Disposition", "inline; filename=\"" + avatarKey + ".png\"")
-        Ok (bytes)
+        app.avatarImageBytesWithSize(avatar, s).map { bytes =>
+          contentType = "image/png"
+          response.setHeader("Content-Disposition", "inline; filename=\"" + avatarKey + ".png\"")
+          Ok(bytes)
+        } getOrElse {
+          BadRequest("400 Bad Request: invalid url was provided")
+        }
       case None =>
         NotFound("404 Not Found")
     }

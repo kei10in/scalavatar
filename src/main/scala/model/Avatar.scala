@@ -6,11 +6,12 @@ import javax.imageio._
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 
+import scala.util.Try
+
 
 trait Avatar {
-  def image(): BufferedImage
-  def imageWithSize(s: Int): BufferedImage = {
-    val img = image()
+  def image(): Option[BufferedImage]
+  def imageWithSize(s: Int): Option[BufferedImage] = image().map { img=>
     val scaledImg = new BufferedImage(s, s, img.getType)
     val g = scaledImg.createGraphics()
 
@@ -42,12 +43,12 @@ object Avatar {
 
 class FileAvatar(filepath: File) extends Avatar {
   def image() = {
-    ImageIO.read(filepath)
+    Try(ImageIO.read(filepath)).toOption
   }
 }
 
 class UrlAvatar(imageUrl: URL) extends Avatar {
   def image() = {
-    ImageIO.read(imageUrl)
+    Try(ImageIO.read(imageUrl)).toOption
   }
 }

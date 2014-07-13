@@ -36,12 +36,14 @@ class Application(workingDirectory: File) {
   def avatarImageBytesWithSize(avatar: Avatar, s: Option[Int]) = {
     val size = validateSize(s)
 
-    val os = new ByteArrayOutputStream ()
-    ImageIO.write (avatar.imageWithSize (size), "png", os)
-    os.flush ()
-    val bytes = os.toByteArray ()
-    os.close ()
-    bytes
+    avatar.imageWithSize(size).map { img =>
+      val os = new ByteArrayOutputStream()
+      ImageIO.write(img, "png", os)
+      os.flush()
+      val bytes = os.toByteArray()
+      os.close()
+      bytes
+    }
   }
 
   private def validateSize(s: Option[Int]) = {
