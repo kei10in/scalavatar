@@ -5,6 +5,7 @@ import scala.math._
 import java.io.{ByteArrayOutputStream, File}
 import java.security.MessageDigest
 import java.nio.charset.StandardCharsets._
+import java.net.{URL, URLDecoder}
 import javax.imageio._
 import java.awt.image.BufferedImage
 
@@ -25,7 +26,8 @@ class Application(workingDirectory: File) {
     else
       default match {
         case Some("404") => None
-        case _ => Some(defaultAvatar)
+        case Some(url) => Some(Avatar.fromUrl(new URL(URLDecoder.decode(url, UTF_8.toString))))
+        case None => Some(defaultAvatar)
       }
   }
 
