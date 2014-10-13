@@ -2,7 +2,8 @@ package com.github.kei10in.scalavatar.model
 
 import scala.math._
 
-import java.io.{ByteArrayOutputStream, File}
+import java.io.{ByteArrayOutputStream}
+import java.nio.file.{Files, Path, Paths}
 import java.security.MessageDigest
 import java.nio.charset.StandardCharsets._
 import java.net.{URL, URLDecoder}
@@ -10,19 +11,18 @@ import javax.imageio._
 import java.awt.image.BufferedImage
 
 
-class Application(workingDirectory: File) {
-
-  val avatarsDir = new File(workingDirectory, "/avatars")
+class Application(workingDirectory: Path) {
+  val avatarsDir = workingDirectory.resolve("avatars")
   val minSize = 1
   val maxSize = 2048
   val defaultSize = 80
-  lazy val defaultAvatar = new FileAvatar(new File(workingDirectory, "/img/default.png"))
+  lazy val defaultAvatar = Avatar.fromPath(workingDirectory.resolve("img/default.png"))
 
   def findImageByHash(hash: String, default: Option[String]=None) : Option[Avatar] = {
-    val dir = new File(avatarsDir, hash.take(2))
-    val filepath = new File(dir, hash.drop(2))
-    if (filepath.exists())
-      Some(Avatar.fromFile(filepath))
+    val dir = avatarsDir.resolve(hash.take(2))
+    val filepath = dir.resolve(hash.drop(2))
+    if (Files.exists(filepath))
+      Some(Avatar.fromPath(filepath))
     else
       default match {
         case Some("404") => None
@@ -57,15 +57,15 @@ class Application(workingDirectory: File) {
   def updateImage(email: String, img: BufferedImage) = {
     val avatarHash = avatarHashFor(email)
 
-    val path = new File(workingDirectory, "/avatars")
-    if (!path.exists())
-      path.mkdir()
+    val path = workingDirectory.resolve("avatars")
+    if (Files.notExists(path))
+      Files.createDirectory(path)
 
-    val dir = new File(path, avatarHash.take(2))
-    if (!dir.exists())
-      dir.mkdir()
+    val dir = path.resolve(avatarHash.take(2))
+    if (Files.notExists(dir))
+      Files.createDirectory(dir)
 
-    val filepath = new File(dir, avatarHash.drop(2))
+    val filepath = dir.resolve(avatarHash.drop(2))
 
     val len = min(img.getHeight(), img.getWidth())
 
@@ -73,7 +73,7 @@ class Application(workingDirectory: File) {
     val y : Int = (img.getHeight() - len) / 2;
     val subimg = img.getSubimage(x, y, len, len)
 
-    ImageIO.write(subimg, "png", filepath)
+    ImageIO.write(subimg, "png", filepath.toFile)
   }
 
   def avatarHashFor(email: String): String = {

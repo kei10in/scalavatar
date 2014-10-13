@@ -1,6 +1,7 @@
 package com.github.kei10in.scalavatar.model
 
 import java.io.File
+import java.nio.file.Path
 import java.net.URL
 import javax.imageio._
 import java.awt.RenderingHints
@@ -32,8 +33,8 @@ trait Avatar {
 }
 
 object Avatar {
-  def fromFile(filepath: File) = {
-    new FileAvatar(filepath)
+  def fromPath(path: Path) = {
+    new PathAvatar(path)
   }
 
   def fromUrl(imageUrl: URL) = {
@@ -41,9 +42,10 @@ object Avatar {
   }
 }
 
-class FileAvatar(filepath: File) extends Avatar {
+
+class PathAvatar(path: Path) extends Avatar {
   def image() = {
-    Try(ImageIO.read(filepath)).toOption
+    Try(ImageIO.read(path.toFile())).toOption
   }
 }
 
