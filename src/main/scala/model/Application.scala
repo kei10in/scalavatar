@@ -11,12 +11,12 @@ import javax.imageio._
 import java.awt.image.BufferedImage
 
 
-class Application(workingDirectory: Path) {
-  val avatarsDir = workingDirectory.resolve("avatars")
+class Application(home: Path) {
+  val avatarsDir = home.resolve("avatars")
   val minSize = 1
   val maxSize = 2048
   val defaultSize = 80
-  lazy val defaultAvatar = Avatar.fromPath(workingDirectory.resolve("img/default.png"))
+  lazy val defaultAvatar = Avatar.fromPath(home.resolve("img/default.png"))
 
   def findImageByHash(hash: String, default: Option[String]=None) : Option[Avatar] = {
     val dir = avatarsDir.resolve(hash.take(2))
@@ -57,7 +57,7 @@ class Application(workingDirectory: Path) {
   def updateImage(email: String, img: BufferedImage) = {
     val avatarHash = avatarHashFor(email)
 
-    val path = workingDirectory.resolve("avatars")
+    val path = home.resolve("avatars")
     if (Files.notExists(path))
       Files.createDirectory(path)
 
