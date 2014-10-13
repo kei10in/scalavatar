@@ -11,12 +11,15 @@ import javax.imageio._
 import java.awt.image.BufferedImage
 
 
-class Application(home: Path) {
+class Application(home: Path, defaultImagePath: Path) {
+  if (Files.notExists((home)))
+    Files.createDirectory(home)
+
   val avatarsDir = home.resolve("avatars")
   val minSize = 1
   val maxSize = 2048
   val defaultSize = 80
-  lazy val defaultAvatar = Avatar.fromPath(home.resolve("img/default.png"))
+  lazy val defaultAvatar = Avatar.fromPath(defaultImagePath)
 
   def findImageByHash(hash: String, default: Option[String]=None) : Option[Avatar] = {
     val dir = avatarsDir.resolve(hash.take(2))

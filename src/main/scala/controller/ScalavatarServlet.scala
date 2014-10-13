@@ -16,7 +16,17 @@ import model._
 
 class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
-  lazy val app = new Application(Paths.get(servletContext.getRealPath("/")))
+  val home = Array(
+    System.getProperty("scalavatar.home") match {
+      case path if (path != null) => Some(Paths.get(path))
+      case _ => None
+    },
+    scala.util.Properties.envOrNone("SCALAVATAR_HOME").map(Paths.get(_))
+  ).find(_ != None).flatten.getOrElse(Paths.get(System.getProperty("user.home")).resolve(".scalavatar"))
+
+  lazy val defaultImagePath = Paths.get(servletContext.getRealPath("/")).resolve("img/default.png")
+
+  lazy val app = new Application(home, defaultImagePath)
 
   get("/") {
     contentType = "text/html"
