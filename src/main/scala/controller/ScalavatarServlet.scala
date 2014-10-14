@@ -2,7 +2,7 @@ package com.github.kei10in.scalavatar
 
 import scala.util._
 
-import java.io.{ByteArrayOutputStream, File}
+import java.nio.file.{Paths}
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 
@@ -16,7 +16,17 @@ import model._
 
 class ScalavatarServlet extends ScalavatarStack with UrlGeneratorSupport {
 
-  lazy val app = new Application(new File(servletContext.getRealPath("/")))
+  val home = Array(
+    System.getProperty("scalavatar.home") match {
+      case path if (path != null) => Some(Paths.get(path))
+      case _ => None
+    },
+    scala.util.Properties.envOrNone("SCALAVATAR_HOME").map(Paths.get(_))
+  ).find(_ != None).flatten.getOrElse(Paths.get(System.getProperty("user.home")).resolve(".scalavatar"))
+
+  lazy val defaultImagePath = Paths.get(Thread.currentThread().getContextClassLoader.getResource("default.png").toURI)
+
+  lazy val app = new Application(home, defaultImagePath)
 
   get("/") {
     contentType = "text/html"
